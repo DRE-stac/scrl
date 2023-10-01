@@ -1170,6 +1170,7 @@ const [setPrice, setSetPrice] = useState("");
 <TextField label="Collection" value={collection} onChange={e => handleInputChange(setCollection, e.target.value, 'Mint NFT With Metadata')} fullWidth margin="normal" className={isDisabled('collection') ? classes.disabled : ''} disabled={isDisabled('collection')} />
 <TextField label="Name" value={name} onChange={e => handleInputChange(setName, e.target.value, 'Create Collection')} fullWidth margin="normal" className={isDisabled('name') ? classes.disabled : ''} disabled={isDisabled('name')} />
 <TextField label="Symbol" value={symbol} onChange={e => handleInputChange(setSymbol, e.target.value, 'Create Collection')} fullWidth margin="normal" className={isDisabled('symbol') ? classes.disabled : ''} disabled={isDisabled('symbol')} />
+<TextField label="IPFS Hash" value={ipfsHash} onChange={(e) => setIpfsHash(e.target.value, "IPFS HASH")}fullWidth margin="normal"/>          
           </List>
     </Box>
     <Box hidden={value !== 3}>
