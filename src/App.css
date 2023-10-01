@@ -1,0 +1,50 @@
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2c3e50;
+    --white-color: #ecf0f1;
+  }
+  
+  .app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: var(--secondary-color);
+    color: var(--white-color);
+    font-family: Arial, sans-serif;
+  }
+  
+  h1 {
+    margin-bottom: 2rem;
+  }
+  
+  .input-group,
+  .button-group {
+    display: grid;
+    gap: 1rem;
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 2rem;
+  }
+  
+  input {
+    padding: 0.5rem;
+    border: none;
+    border-radius: 0.25rem;
+  }
+  
+  button {
+    padding: 0.5rem;
+    border: none;
+    border-radius: 0.25rem;
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: darken(var(--primary-color), 10%);
+  }
+  
