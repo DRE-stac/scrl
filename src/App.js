@@ -631,7 +631,9 @@ const [setPrice, setSetPrice] = useState("");
 
 
 
-
+  const [selectedBook, setSelectedBook] = useState(null);
+  const [Bookchapters, setBookChapters] = useState([]);
+  
   const [isCustomHash, setIsCustomHash] = useState(false);
   const [selectedChapter, setSelectedChapter] = useState("");
   
@@ -803,7 +805,11 @@ const [setPrice, setSetPrice] = useState("");
       
 
   const [value, setValue] = useState(0);
-
+  const [books, setBooks] = useState([
+    { name: 'The Unseen Revolution', hash: 'QmQDkhXQN7GjPamjJj4ZkNuMSoQDMHZ3ekZ8Q47wUUBHxx' },
+    { name: 'Book 2', hash: 'ipfsHash2' },
+    // ... more books
+  ]);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -872,6 +878,21 @@ const [setPrice, setSetPrice] = useState("");
     
     return requiredFields.some(field => !fieldValues[field]);
   };
+
+  const fetchChapters = (bookHash) => {
+    const ipfsGatewayUrl = `https://ipfs.io/ipfs/${bookHash}`;
+  
+    axios.get(ipfsGatewayUrl)
+      .then(response => {
+        // Assume the response data contains an array of chapters
+        // in the form { name: 'Chapter 1', hash: 'chapHash1' }
+        setBookChapters(response.data.Bookchapters);
+      })
+      .catch(error => {
+        console.error("Error fetching chapters from IPFS:", error);
+      });
+  };
+  
 
   useEffect(() => {
     getData();
@@ -997,35 +1018,38 @@ const [setPrice, setSetPrice] = useState("");
       overflow: 'auto', 
       maxHeight: '600px', 
       scrollbarWidth: 'thin', 
-      scrollbarColor: 'black grey'
+      scrollbarColor: 'black grey',
+      padding: '5px 10px'  // Adjusts padding; smaller values will reduce the border around the text.
+
     }}
   >
-    <DialogContentText>
-      {metadata ? (
-        <div style={{ whiteSpace: 'pre-line' }}>
-          <Typography 
-            variant="h6" 
-            style={{ marginBottom: '20px' }}
-          >
-            {metadata.title}
-          </Typography>
-          <Typography 
-            variant="body1" 
-            style={{ textAlign: 'justify', lineHeight: '1.6', marginBottom: '10px' }}
-          >
-            {metadata.chapter}
-          </Typography>
-          <Typography 
-            variant="body1" 
-            style={{ textAlign: 'justify', lineHeight: '1.6' }}
-          >
-            {metadata.text}
-          </Typography>
-        </div>
-      ) : (
-        "Loading..."
-      )}
-    </DialogContentText>
+  <DialogContentText>
+  {metadata ? (
+    <div style={{ whiteSpace: 'pre-line' }}>  
+      <Typography 
+        variant="h6" 
+        style={{ marginBottom: '20px', fontSize: '24px' }}  
+      >
+        {metadata.title}
+      </Typography>
+      <Typography 
+        variant="body1" 
+        style={{ textAlign: 'justify', lineHeight: '1.6', marginBottom: '10px', fontSize: '18px' }} 
+      >
+        {metadata.chapter}
+      </Typography>
+      <Typography 
+        variant="body1" 
+        style={{ textAlign: 'justify', lineHeight: '1.3', fontSize: '12px' , 'fontFamily': 'Monaco, monospace'}}  
+      >
+        {metadata.text}
+      </Typography>
+    </div>
+  ) : (
+    "Loading..."
+  )}
+</DialogContentText>
+
   </DialogContent>
 
   <DialogActions 
@@ -1035,6 +1059,26 @@ const [setPrice, setSetPrice] = useState("");
       padding: '8px' 
     }}
   >
+
+<div style={{ marginBottom: '10px' }}>
+      <TextField
+        select
+        label="Select Book"
+        variant="outlined"
+        size="small"
+        value={selectedBook}
+        onChange={(e) => {
+          setSelectedBook(e.target.value);
+          fetchChapters(e.target.value);
+        }}
+      >
+    {books.map((book, index) => (
+    <MenuItem key={index} value={book.hash}>
+      {book.name}
+    </MenuItem>
+  ))}
+      </TextField>
+    </div>
     <div style={{ display: 'flex', alignItems: 'center' }}>
         {isCustomHash ? (
           <TextField
@@ -1062,6 +1106,7 @@ const [setPrice, setSetPrice] = useState("");
               }
             }}
           >
+            
             {chapters.map((chapter, index) => (
               <MenuItem key={index} value={chapter.hash}>
                 {chapter.name}
@@ -1217,8 +1262,7 @@ const [setPrice, setSetPrice] = useState("");
 
 
               <Typography variant="body1" component="p" gutterBottom>
-                Your Scroll Dashboard provides easy digital asset management. Token Management (for token selection, deposit, withdrawl, minting NFTs, etc.), Transaction Actions (for performing various transactions like deposits, withdrawals, and transfers), and Transaction History (for past transaction records). The bottom navigation bar provides quick access to Home and Settings for your convenience.
-                </Typography>
+              Revolutionize your literary journey with The_Scroll. Empowered by blockchain, NFTs, and smart contracts, we offer a transparent, censorship-resistant ecosystem. Publish freely, own your content through unique NFTs, and engage directly with readers.                </Typography>
 
 
 
