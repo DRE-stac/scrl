@@ -1067,6 +1067,7 @@ const [setPrice, setSetPrice] = useState("");
         variant="outlined"
         size="small"
         value={selectedBook}
+        style={{ width: '180px'}} 
         onChange={(e) => {
           setSelectedBook(e.target.value);
           fetchChapters(e.target.value);
