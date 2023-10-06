@@ -1018,35 +1018,38 @@ const [setPrice, setSetPrice] = useState("");
       overflow: 'auto', 
       maxHeight: '600px', 
       scrollbarWidth: 'thin', 
-      scrollbarColor: 'black grey'
+      scrollbarColor: 'black grey',
+      padding: '5px 10px'  // Adjusts padding; smaller values will reduce the border around the text.
+
     }}
   >
-    <DialogContentText>
-      {metadata ? (
-        <div style={{ whiteSpace: 'pre-line' }}>
-          <Typography 
-            variant="h6" 
-            style={{ marginBottom: '20px' }}
-          >
-            {metadata.title}
-          </Typography>
-          <Typography 
-            variant="body1" 
-            style={{ textAlign: 'justify', lineHeight: '1.6', marginBottom: '10px' }}
-          >
-            {metadata.chapter}
-          </Typography>
-          <Typography 
-            variant="body1" 
-            style={{ textAlign: 'justify', lineHeight: '1.6' }}
-          >
-            {metadata.text}
-          </Typography>
-        </div>
-      ) : (
-        "Loading..."
-      )}
-    </DialogContentText>
+  <DialogContentText>
+  {metadata ? (
+    <div style={{ whiteSpace: 'pre-line' }}>  
+      <Typography 
+        variant="h6" 
+        style={{ marginBottom: '20px', fontSize: '24px' }}  
+      >
+        {metadata.title}
+      </Typography>
+      <Typography 
+        variant="body1" 
+        style={{ textAlign: 'justify', lineHeight: '1.6', marginBottom: '10px', fontSize: '18px' }} 
+      >
+        {metadata.chapter}
+      </Typography>
+      <Typography 
+        variant="body1" 
+        style={{ textAlign: 'justify', lineHeight: '1.3', fontSize: '12px' , 'fontFamily': 'Monaco, monospace'}}  
+      >
+        {metadata.text}
+      </Typography>
+    </div>
+  ) : (
+    "Loading..."
+  )}
+</DialogContentText>
+
   </DialogContent>
 
   <DialogActions 
@@ -1064,6 +1067,7 @@ const [setPrice, setSetPrice] = useState("");
         variant="outlined"
         size="small"
         value={selectedBook}
+        style={{ width: '180px'}} 
         onChange={(e) => {
           setSelectedBook(e.target.value);
           fetchChapters(e.target.value);
