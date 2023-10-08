@@ -652,7 +652,7 @@ const [setPrice, setSetPrice] = useState("");
   };
 
 
-
+  const [aboutOpen, setAboutOpen] = useState(false);
   const [howToUseOpen, setHowToUseOpen] = useState(false);
   const [bookViewerOpen, setBookViewerOpen] = useState(false);
   const handleBookViewerOpen = () => {
@@ -677,7 +677,13 @@ const [setPrice, setSetPrice] = useState("");
 
   <Button onClick={handleButtonClick}>Call Function</Button>
 
+  const handleAboutOpen = () => {
+    setAboutOpen(true);
+  };
 
+  const handleAboutClose = () => {
+    setAboutOpen(false);
+  };
   const handleHowToUseOpen = () => {
     setHowToUseOpen(true);
   };
@@ -927,6 +933,8 @@ const [setPrice, setSetPrice] = useState("");
           <Typography variant="h6" style={{ flexGrow: 1, fontFamily: '"Roboto Mono", monospace' }}>
   The_Scroll.x
 </Typography>
+<img src="./logo512.png" alt="Logo" style={{ width: '50px', height: '50px' }} />
+
 
           {blockchain.account && (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
@@ -962,7 +970,7 @@ const [setPrice, setSetPrice] = useState("");
             <ListItemText primary="BookViewer" />
           </ListItem>
           
-          <ListItem button onClick={() => console.log('Clicked on About')}>
+          <ListItem button onClick={handleAboutOpen}>
             <ListItemText primary="About" />
           </ListItem>
           <ListItem button onClick={() => console.log('Clicked on Logout')}>
@@ -1155,6 +1163,22 @@ const [setPrice, setSetPrice] = useState("");
   `}</style>
 </Dialog>
 
+<Dialog open={aboutOpen} onClose={handleAboutClose} fullWidth={true}
+  maxWidth="md" >
+        <DialogTitle>How to Use</DialogTitle>
+        <DialogContent>
+        <iframe 
+      src="/Whitepaper.pdf" 
+      width="100%" 
+      height="400px">
+    </iframe>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleAboutClose} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
 
 
       <Container maxWidth="lg" justifyContent="center" alignItems="center">
@@ -1240,7 +1264,7 @@ const [setPrice, setSetPrice] = useState("");
             </Paper>
           </Grid>
 
-          <Grid item xs={12} md={8}>
+          <Grid item xs={12} md={8} style={{ marginBottom: '60px' }}>
             <Paper style={{ padding: theme.spacing(2), color: theme.palette.text.secondary }}>
               <Zoom in={true} style={{ transitionDelay: '300ms' }}>
                 <Tooltip title={isButtonDisabled('Connect') ? 'Fill all required fields' : 'Connect'}>
