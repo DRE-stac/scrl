@@ -151,6 +151,25 @@ export const deposit = (amount) => {
     }
   };
 };
+
+const fetchNFTMetadata = (tokenURI) => {
+  return async (dispatch) => {
+    try {
+      const metadata = await axios.get(tokenURI);
+      dispatch({
+        type: "FETCH_NFT_METADATA_SUCCESS",
+        payload: metadata.data,
+      });
+    } catch (error) {
+      dispatch({
+        type: "FETCH_NFT_METADATA_FAILED",
+        payload: error.message,
+      });
+    }
+  };
+};
+
+
 export const mintNFT = (recipient, tokenURI) => {
   return async (dispatch, getState) => {
     const { web3, account, smartContract } = getState().blockchain;
@@ -202,6 +221,61 @@ export const setViewCost = (newCost) => {
     }
   };
 };
+
+
+// Action Type
+const FETCH_NFTS_REQUEST = "FETCH_NFTS_REQUEST";
+const FETCH_NFTS_SUCCESS = "FETCH_NFTS_SUCCESS";
+const FETCH_NFTS_FAILED = "FETCH_NFTS_FAILED";
+
+// Action Creator for Fetching NFTs
+// Specify the desired collection address here
+// Specify the desired collection address here
+const DESIRED_COLLECTION_ADDRESS = "0x846b8114870A9dBB9dA855A7ec2fb28E5CCCA352";
+
+export const fetchNFTs = (account) => {
+  return async (dispatch, getState) => {
+    dispatch({ type: FETCH_NFTS_REQUEST });
+    console.log(`Fetching NFTs for account: ${account}`); // Log the account being queried
+
+    try {
+      const { smartContract } = getState().blockchain;
+      console.log("Smart contract address:", smartContract.options.address); // Log the smart contract address
+
+      // Assuming you have a method to get all token IDs for an account
+      const tokenIds = await smartContract.methods.tokensOfOwner(account).call();
+      console.log(`Found ${tokenIds.length} token(s) for account:`, tokenIds); // Log the token IDs found
+
+      const nftData = await Promise.all(tokenIds.map(async (tokenId) => {
+        // Confirm ownership
+        const owner = await smartContract.methods.ownerOf(tokenId).call();
+        console.log(`Token ID ${tokenId} is owned by: ${owner}`); // Log the owner of each token
+
+        // Get token URI
+        const tokenURI = await smartContract.methods.tokenURI(tokenId).call();
+        console.log(`Token URI for ID ${tokenId}: ${tokenURI}`); // Log the token URI
+
+        return { id: tokenId, tokenURI }; // Only return the data you need
+      }));
+
+      // Filter out nulls in case some tokens weren't owned by the user
+      const ownedNFTs = nftData.filter(nft => nft !== null);
+      console.log("Owned NFTs:", ownedNFTs); // Log the final filtered NFTs
+
+      dispatch({ type: FETCH_NFTS_SUCCESS, payload: ownedNFTs });
+    } catch (error) {
+      console.error("Failed to fetch NFTs:", error);
+      dispatch({ type: FETCH_NFTS_FAILED, payload: error.message });
+    }
+  };
+};
+
+// Replace this function with your actual logic for extracting the collection address
+function extractCollectionFromURI(tokenURI) {
+  // Implement your logic to extract the collection address from the tokenURI or another property
+  // This could involve fetching the metadata from the URI and parsing the collection address
+  return "ExtractedCollectionAddress";
+}
 
 
 

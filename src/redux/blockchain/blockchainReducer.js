@@ -1,3 +1,9 @@
+// Action Types
+const FETCH_NFTS_REQUEST = "FETCH_NFTS_REQUEST";
+const FETCH_NFTS_SUCCESS = "FETCH_NFTS_SUCCESS";
+const FETCH_NFTS_FAILED = "FETCH_NFTS_FAILED";
+
+
 const initialState = {
   loading: false,
   account: null,
@@ -12,6 +18,11 @@ const initialState = {
   bookPrices: {},
   gasPrice: null,
   network: null,
+  userNFTs: [],  // Initialize userNFTs as an empty array
+  transactionHistory: [],
+  userNFTsMetadata: [],
+  pendingTransactions: [],
+
 };
 
 const blockchainReducer = (state = initialState, action) => {
@@ -44,6 +55,34 @@ const blockchainReducer = (state = initialState, action) => {
         ...state,
         account: action.payload.account,
       };
+      case FETCH_NFTS_REQUEST:
+        return {
+          ...state,
+          loading: true,
+        };
+      case FETCH_NFTS_SUCCESS:
+        return {
+          ...state,
+          loading: false,
+          userNFTs: action.payload,  // Update the userNFTs with the fetched data
+        };
+      case FETCH_NFTS_FAILED:
+        return {
+          ...state,
+          loading: false,
+          errorMsg: action.payload,
+        };
+      case "FETCH_NFT_METADATA_SUCCESS":
+      return {
+        ...state,
+        userNFTsMetadata: [...state.userNFTsMetadata, action.payload],
+      };
+       case "FETCH_NFT_METADATA_FAILED":
+      // Handle error
+      return {
+        ...state,
+        errorMsg: action.payload,
+      };
       case 'APPROVE_TOKEN_REQUEST':
   return {
     ...state,
@@ -58,6 +97,9 @@ const blockchainReducer = (state = initialState, action) => {
     default:
       return state;
   }
+  
+
+  
 };
 
 export default blockchainReducer;
