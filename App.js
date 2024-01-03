@@ -30,10 +30,12 @@ import OpenChannelIcon from '@material-ui/icons/OpenInNew';
 import CloseChannelIcon from '@material-ui/icons/Close';
 import ContractABI from './abi.js';
 import axios from 'axios';
+import UserNFTsDisplay from './UserNFTsDisplay'; // Adjust the path as necessary
 
 import { useDispatch, useSelector } from "react-redux";
 import { connect, mintNFT } from "./redux/blockchain/blockchainActions";
 import { fetchData } from "./redux/data/dataActions";
+import { fetchNFTs } from "./redux/blockchain/blockchainActions";
 
 function HowToUseDialog({ open, onClose }) {
   return (
@@ -135,6 +137,7 @@ const [setPrice, setSetPrice] = useState("");
   const [ipfsHash, setIpfsHash] = useState(''); // Initialize with an empty string
 
   const [metadata, setMetadata] = useState(null);
+  const [nftMetadata, setNftMetadata] = useState(null);
   const [connecting, setConnecting] = useState(false);
 
   const dispatch = useDispatch();
@@ -144,7 +147,7 @@ const [setPrice, setSetPrice] = useState("");
   const [Depositing, setDepositing] = useState(false);
   const Form = useSelector((state) => state.ContactForm);
   const [nextIPFSHash, setNextIPFSHash] = useState("");
-
+  const { account, userNFTs } = useSelector(state => state.blockchain);
   const handleSubmit = () => {
     // Handle the submission logic here
     console.log("Submitted next IPFS hash:", nextIPFSHash);
@@ -168,7 +171,7 @@ const [setPrice, setSetPrice] = useState("");
         .send({
           gasLimit: "500000",
           from: blockchain.account,
-          to: "0x81B1e0e0cFCA9aFcb2Ff5D513c754F192Deeec77",
+          to: "0x26D702b6Ab8ccf8527ff639E1f10158ef824f7BB",
           value: amountInWei,
         })
         .once("error", (err) => {
@@ -190,7 +193,7 @@ const [setPrice, setSetPrice] = useState("");
         .deposit(contractAddress, amountInWei)
         .send({
           gasLimit: "500000",
-          to: "0x81B1e0e0cFCA9aFcb2Ff5D513c754F192Deeec77",
+          to: "0x26D702b6Ab8ccf8527ff639E1f10158ef824f7BB",
           from: blockchain.account,
         })
         .once("error", (err) => {
@@ -218,7 +221,7 @@ const [setPrice, setSetPrice] = useState("");
 
     if (_token === 'ETH' && _amount) {
       // Add value to transaction only when _amount is provided and _token is 'ETH'
-      transactionOptions.to = "0x81B1e0e0cFCA9aFcb2Ff5D513c754F192Deeec77";
+      transactionOptions.to = "0x26D702b6Ab8ccf8527ff639E1f10158ef824f7BB";
       transactionOptions.value = blockchain.web3.utils.toWei((_amount).toString(), "ether");
     }
 
@@ -271,7 +274,7 @@ const [setPrice, setSetPrice] = useState("");
       const receipt = await blockchain.smartContract.methods
         .mintNFT(collection, recipient, tokenURI)
         .send({
-          to: "0x81B1e0e0cFCA9aFcb2Ff5D513c754F192Deeec77",
+          to: "0x26D702b6Ab8ccf8527ff639E1f10158ef824f7BB",
           gasLimit: "500000",
           from: blockchain.account,
         });
@@ -295,7 +298,7 @@ const [setPrice, setSetPrice] = useState("");
       const receipt = await blockchain.smartContract.methods
         .buyBook(_tokenId)
         .send({
-          to: "0x81B1e0e0cFCA9aFcb2Ff5D513c754F192Deeec77",
+          to: "0x26D702b6Ab8ccf8527ff639E1f10158ef824f7BB",
           gasLimit: "500000",
           from: blockchain.account,
         });
@@ -319,7 +322,7 @@ const [setPrice, setSetPrice] = useState("");
       const receipt = await blockchain.smartContract.methods
         .setPrice(_tokenId, _price)
         .send({
-          to: "0x81B1e0e0cFCA9aFcb2Ff5D513c754F192Deeec77",
+          to: "0x26D702b6Ab8ccf8527ff639E1f10158ef824f7BB",
           gasLimit: "500000",
           from: blockchain.account,
         });
@@ -367,7 +370,7 @@ const [setPrice, setSetPrice] = useState("");
     try {
       const participants = await blockchain.smartContract.methods
         .getChannelParticipants(channelId)
-        .call({to: "0x81B1e0e0cFCA9aFcb2Ff5D513c754F192Deeec77",
+        .call({to: "0x26D702b6Ab8ccf8527ff639E1f10158ef824f7BB",
         gasLimit: "500000", 
           from: blockchain.account });
   
@@ -383,7 +386,7 @@ const [setPrice, setSetPrice] = useState("");
       const receipt = await blockchain.smartContract.methods
         .setViewCost(newCost? blockchain.web3.utils.toWei((newCost).toString(), "ether") : "0")
         .send({
-          to: "0x81B1e0e0cFCA9aFcb2Ff5D513c754F192Deeec77",
+          to: "0x26D702b6Ab8ccf8527ff639E1f10158ef824f7BB",
           gasLimit: "500000",
           from: blockchain.account,
         });  
@@ -400,7 +403,7 @@ const [setPrice, setSetPrice] = useState("");
       const receipt = await blockchain.smartContract.methods
         .setForwardAddress(forwardAddress)
         .send({
-          to: "0x81B1e0e0cFCA9aFcb2Ff5D513c754F192Deeec77",
+          to: "0x26D702b6Ab8ccf8527ff639E1f10158ef824f7BB",
           gasLimit: "500000",
           from: blockchain.account,
         });      // Handle the receipt or other actions
@@ -414,7 +417,7 @@ const [setPrice, setSetPrice] = useState("");
       const receipt = await blockchain.smartContract.methods
         .setFeePercent(feePercent)
         .send({
-          to: "0x81B1e0e0cFCA9aFcb2Ff5D513c754F192Deeec77",
+          to: "0x26D702b6Ab8ccf8527ff639E1f10158ef824f7BB",
           gasLimit: "500000",
           from: blockchain.account,
         });      // Handle the receipt or other actions
@@ -430,7 +433,7 @@ const [setPrice, setSetPrice] = useState("");
       const receipt = await blockchain.smartContract.methods
         .burnToken(contractAddress, amountInWei)
         .send({
-          to: "0x81B1e0e0cFCA9aFcb2Ff5D513c754F192Deeec77",
+          to: "0x26D702b6Ab8ccf8527ff639E1f10158ef824f7BB",
           gasLimit: "500000",
           from: blockchain.account,
         });      // Handle the receipt or other actions
@@ -444,7 +447,7 @@ const [setPrice, setSetPrice] = useState("");
       const receipt = await blockchain.smartContract.methods
         .burnNFT(collection, tokenId)
         .send({
-          to: "0x81B1e0e0cFCA9aFcb2Ff5D513c754F192Deeec77",
+          to: "0x26D702b6Ab8ccf8527ff639E1f10158ef824f7BB",
           gasLimit: "500000",
           from: blockchain.account,
         });      // Handle the receipt or other actions
@@ -458,7 +461,7 @@ const [setPrice, setSetPrice] = useState("");
       const receipt = await blockchain.smartContract.methods
         .schedulePayment(pType, contractAddress, recipient, amount, start, interval, changeRate)
         .send({
-          to: "0x81B1e0e0cFCA9aFcb2Ff5D513c754F192Deeec77",
+          to: "0x26D702b6Ab8ccf8527ff639E1f10158ef824f7BB",
           gasLimit: "500000",
           from: blockchain.account,
         });      // Handle the receipt or other actions
@@ -472,7 +475,7 @@ const [setPrice, setSetPrice] = useState("");
       const receipt = await blockchain.smartContract.methods
         .executePayments()
         .send({
-          to: "0x81B1e0e0cFCA9aFcb2Ff5D513c754F192Deeec77",
+          to: "0x26D702b6Ab8ccf8527ff639E1f10158ef824f7BB",
           gasLimit: "500000",
           from: blockchain.account,
         });      // Handle the receipt or other actions
@@ -486,7 +489,7 @@ const [setPrice, setSetPrice] = useState("");
       const receipt = await blockchain.smartContract.methods
         .directTransfer(contractAddress, to, amount, tokenId)
         .send({
-          to: "0x81B1e0e0cFCA9aFcb2Ff5D513c754F192Deeec77",
+          to: "0x26D702b6Ab8ccf8527ff639E1f10158ef824f7BB",
           gasLimit: "500000",
           from: blockchain.account,
         });      // Handle the receipt or other actions
@@ -500,7 +503,7 @@ const [setPrice, setSetPrice] = useState("");
       const receipt = await blockchain.smartContract.methods
         .createCollection(collection, name, symbol)
         .send({
-          to: "0x81B1e0e0cFCA9aFcb2Ff5D513c754F192Deeec77",
+          to: "0x26D702b6Ab8ccf8527ff639E1f10158ef824f7BB",
           gasLimit: "500000",
           from: blockchain.account,
         });      // Handle the receipt or other actions
@@ -514,7 +517,7 @@ const [setPrice, setSetPrice] = useState("");
       const receipt = await blockchain.smartContract.methods
         .mintNFTWithMetadata(collection, recipient, name, description, layers, initialChapterHash)
         .send({
-          to: "0x81B1e0e0cFCA9aFcb2Ff5D513c754F192Deeec77",
+          to: "0x26D702b6Ab8ccf8527ff639E1f10158ef824f7BB",
           gasLimit: "500000",
           from: blockchain.account,
         });      // Handle the receipt or other actions
@@ -528,7 +531,7 @@ const [setPrice, setSetPrice] = useState("");
       const receipt = await blockchain.smartContract.methods
         .addMetadata(tokenId, name, description, layers, chapterHash)
         .send({
-          to: "0x81B1e0e0cFCA9aFcb2Ff5D513c754F192Deeec77",
+          to: "0x26D702b6Ab8ccf8527ff639E1f10158ef824f7BB",
           gasLimit: "500000",
           from: blockchain.account,
         });      // Handle the receipt or other actions
@@ -542,7 +545,7 @@ const [setPrice, setSetPrice] = useState("");
       const metadata = await blockchain.smartContract.methods
         .getMetadata(tokenId)
         .call({ 
-          to: "0x81B1e0e0cFCA9aFcb2Ff5D513c754F192Deeec77",
+          to: "0x26D702b6Ab8ccf8527ff639E1f10158ef824f7BB",
           gasLimit: "500000",
           from: blockchain.account });
       return metadata;
@@ -556,7 +559,7 @@ const [setPrice, setSetPrice] = useState("");
       const channelId = await blockchain.smartContract.methods
         .openChannel(participant1, participant2, initialBalance1, initialBalance2, tokenId)
         .send({
-          to: "0x81B1e0e0cFCA9aFcb2Ff5D513c754F192Deeec77",
+          to: "0x26D702b6Ab8ccf8527ff639E1f10158ef824f7BB",
           gasLimit: "500000",
           from: blockchain.account,
         });      return channelId;
@@ -570,7 +573,7 @@ const [setPrice, setSetPrice] = useState("");
       const receipt = await blockchain.smartContract.methods
         .transferEtherToChannel(channelId)
         .send({ 
-          to: "0x81B1e0e0cFCA9aFcb2Ff5D513c754F192Deeec77",
+          to: "0x26D702b6Ab8ccf8527ff639E1f10158ef824f7BB",
           gasLimit: "500000",
           from: blockchain.account, value: value });
       // Handle the receipt or other actions
@@ -584,7 +587,7 @@ const [setPrice, setSetPrice] = useState("");
       const receipt = await blockchain.smartContract.methods
         .updateChannel(channelId, newNonce, newViewCount, newChapterURI, signature)
         .send({
-          to: "0x81B1e0e0cFCA9aFcb2Ff5D513c754F192Deeec77",
+          to: "0x26D702b6Ab8ccf8527ff639E1f10158ef824f7BB",
           gasLimit: "500000",
           from: blockchain.account,
         });      // Handle the receipt or other actions
@@ -598,7 +601,7 @@ const [setPrice, setSetPrice] = useState("");
       const receipt = await blockchain.smartContract.methods
         .closeChannel(channelId, nonce, finalViewCount, tokens, balances, v, r, s)
         .send({
-          to: "0x81B1e0e0cFCA9aFcb2Ff5D513c754F192Deeec77",
+          to: "0x26D702b6Ab8ccf8527ff639E1f10158ef824f7BB",
           gasLimit: "500000",
           from: blockchain.account,
         });      // Handle the receipt or other actions
@@ -651,8 +654,10 @@ const [setPrice, setSetPrice] = useState("");
     }
   };
 
+  const [nftPopupOpen, setNftPopupOpen] = useState(false);
+  const [nftTitles, setNftTitles] = useState({}); // Stores titles indexed by NFT ID
 
-
+  const [aboutOpen, setAboutOpen] = useState(false);
   const [howToUseOpen, setHowToUseOpen] = useState(false);
   const [bookViewerOpen, setBookViewerOpen] = useState(false);
   const handleBookViewerOpen = () => {
@@ -677,7 +682,13 @@ const [setPrice, setSetPrice] = useState("");
 
   <Button onClick={handleButtonClick}>Call Function</Button>
 
+  const handleAboutOpen = () => {
+    setAboutOpen(true);
+  };
 
+  const handleAboutClose = () => {
+    setAboutOpen(false);
+  };
   const handleHowToUseOpen = () => {
     setHowToUseOpen(true);
   };
@@ -803,11 +814,11 @@ const [setPrice, setSetPrice] = useState("");
         return !uniqueFields.includes(field);
       };
       
-
+      const [combinedData, setCombinedData] = useState([]);
   const [value, setValue] = useState(0);
   const [books, setBooks] = useState([
-    { name: 'The Unseen Revolution', hash: 'QmQDkhXQN7GjPamjJj4ZkNuMSoQDMHZ3ekZ8Q47wUUBHxx' },
-    { name: 'Book 2', hash: 'ipfsHash2' },
+    { name: 'The Unseen Revolution', hash: 'QmX2enz1b2v9RJ4rNWjnNzd6LgE6KNJE4J5Rv7kLkHkmFi' },
+    { name: 'The Bible', hash: 'QmaBopgC994zie1Dn5jt1BuRFe13ZLgHrZYWDRiYYd8TB1' },
     // ... more books
   ]);
   const handleChange = (event, newValue) => {
@@ -879,20 +890,147 @@ const [setPrice, setSetPrice] = useState("");
     return requiredFields.some(field => !fieldValues[field]);
   };
 
-  const fetchChapters = (bookHash) => {
-    const ipfsGatewayUrl = `https://ipfs.io/ipfs/${bookHash}`;
+  const fetchNFTMetadata = (tokenURI) => {
+    return async (dispatch) => {
+      const cachedMetadata = localStorage.getItem(tokenURI);
+      if (cachedMetadata) {
+        dispatch({
+          type: "FETCH_NFT_METADATA_SUCCESS",
+          payload: JSON.parse(cachedMetadata),
+        });
+        return;
+      }
   
-    axios.get(ipfsGatewayUrl)
-      .then(response => {
-        // Assume the response data contains an array of chapters
-        // in the form { name: 'Chapter 1', hash: 'chapHash1' }
-        setBookChapters(response.data.Bookchapters);
-      })
-      .catch(error => {
-        console.error("Error fetching chapters from IPFS:", error);
-      });
+      try {
+        const response = await axios.get(tokenURI);
+        localStorage.setItem(tokenURI, JSON.stringify(response.data));
+        dispatch({
+          type: "FETCH_NFT_METADATA_SUCCESS",
+          payload: response.data,
+        });
+      } catch (error) {
+        dispatch({
+          type: "FETCH_NFT_METADATA_FAILED",
+          payload: error.message,
+        });
+      }
+    };
   };
   
+
+  const fetchBookData = async (bookHash) => {
+    try {
+      const response = await axios.get(`https://ipfs.io/ipfs/${bookHash}`);
+      console.log("Full response:", response);
+  
+      // Access the response data directly
+      if (response.data && response.data.Bookchapters) {
+        setBookChapters(response.data.Bookchapters);
+      } else {
+        setBookChapters([]);
+      }
+    } catch (error) {
+      console.error("Error fetching book data from IPFS:", error);
+      setBookChapters([]);
+    }
+  };
+  
+  
+  useEffect(() => {
+    const fetchAndSetNFTTitle = async (nft) => {
+        const ipfsGatewayUrl = `https://ipfs.io/ipfs/${nft.hash}`; // Replace 'nft.hash' with the actual property name
+
+        try {
+            const response = await axios.get(ipfsGatewayUrl);
+            const title = response.data.title; // Adjust based on the structure of your metadata
+            setNftTitles(prevTitles => ({
+                ...prevTitles,
+                [nft.id]: title
+            }));
+        } catch (error) {
+            console.error("Error fetching NFT title from IPFS:", error);
+            setNftTitles(prevTitles => ({
+                ...prevTitles,
+                [nft.id]: "Error loading title" // Or a default error message
+            }));
+        }
+    };
+
+    if (nftPopupOpen && combinedData && combinedData.length > 0) {
+        combinedData.forEach(fetchAndSetNFTTitle);
+    }
+}, [nftPopupOpen, combinedData]);
+
+  
+  const displayChapter = async (chapterHash) => {
+    try {
+      const response = await axios.get(`https://ipfs.io/ipfs/${chapterHash}`);
+      setMetadata(response.data); // Assumes chapter content is in the response data
+    } catch (error) {
+      console.error("Error fetching chapter from IPFS:", error);
+    }
+  };
+  
+  useEffect(() => {
+    // Function to fetch and update metadata for a single NFT
+    const fetchAndSetNFTMetadata = async (nft) => {
+        console.log(`Fetching metadata for NFT with ID: ${nft.id}`);
+        const ipfsGatewayUrl = `https://ipfs.io/ipfs/${nft.hash}`; // Replace 'nft.hash' with the actual property name
+        console.log(`IPFS Gateway URL: ${ipfsGatewayUrl}`);
+
+        try {
+            const response = await axios.get(ipfsGatewayUrl);
+            console.log(`Metadata fetched for NFT ID ${nft.id}:`, response.data);
+            setNftMetadata(prevMetadata => {
+                const updatedMetadata = {
+                    ...prevMetadata,
+                    [nft.id]: response.data
+                };
+                console.log(`Updated metadata state for NFT ID ${nft.id}:`, updatedMetadata);
+                return updatedMetadata;
+            });
+        } catch (error) {
+            console.error(`Error fetching NFT metadata from IPFS for NFT ID ${nft.id}:`, error);
+            setNftMetadata(prevMetadata => {
+                const updatedMetadata = {
+                    ...prevMetadata,
+                    [nft.id]: { error: "Failed to load metadata" }
+                };
+                console.log(`Updated metadata state with error for NFT ID ${nft.id}:`, updatedMetadata);
+                return updatedMetadata;
+            });
+        }
+    };
+
+    // Trigger the metadata fetch when the NFT viewer is opened and NFTs are available
+    if (nftPopupOpen && combinedData && combinedData.length > 0) {
+        console.log('NFT viewer is open, and combined data is available. Starting to fetch metadata for all NFTs.');
+        combinedData.forEach(fetchAndSetNFTMetadata);
+    } else {
+        console.log('NFT viewer is not open or no combined data available.');
+    }
+}, [nftPopupOpen, combinedData]);
+
+
+  useEffect(() => {
+    if (userNFTs && userNFTs.length > 0) {
+        const formattedNFTs = userNFTs.map(nft => ({
+            name: `NFT ID: ${nft.id}`, // or any other identifier
+            hash: nft.tokenURI,
+        }));
+        setCombinedData([...books, ...formattedNFTs]);
+    }
+}, [userNFTs]); // Depend on userNFTs
+
+  const fetchUserNFTs = async () => {
+    if (blockchain.account && blockchain.smartContract) {
+      dispatch(fetchNFTs(blockchain.account));
+    }
+  };
+
+  useEffect(() => {
+    fetchUserNFTs();
+  }, [blockchain.account]);
 
   useEffect(() => {
     getData();
@@ -915,6 +1053,7 @@ const [setPrice, setSetPrice] = useState("");
         });
     }
   }, [bookViewerOpen, ipfsHash]);
+  
 
   return (
     <ThemeProvider theme={theme}>
@@ -927,6 +1066,8 @@ const [setPrice, setSetPrice] = useState("");
           <Typography variant="h6" style={{ flexGrow: 1, fontFamily: '"Roboto Mono", monospace' }}>
   The_Scroll.x
 </Typography>
+<img src="./logo512.png" alt="Logo" style={{ width: '50px', height: '50px' }} />
+
 
           {blockchain.account && (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
@@ -961,8 +1102,11 @@ const [setPrice, setSetPrice] = useState("");
           <ListItem button onClick={handleBookViewerOpen}>
             <ListItemText primary="BookViewer" />
           </ListItem>
-          
-          <ListItem button onClick={() => console.log('Clicked on About')}>
+          <ListItem button onClick={() => setNftPopupOpen(true)}>
+  <ListItemText primary="View NFTs" />
+</ListItem>
+
+          <ListItem button onClick={handleAboutOpen}>
             <ListItemText primary="About" />
           </ListItem>
           <ListItem button onClick={() => console.log('Clicked on Logout')}>
@@ -1002,6 +1146,18 @@ const [setPrice, setSetPrice] = useState("");
           </Button>
         </DialogActions>
       </Dialog>
+      
+      <Dialog open={nftPopupOpen} onClose={() => setNftPopupOpen(false)} fullWidth maxWidth="md">
+  <DialogTitle>Your NFTs</DialogTitle>
+  <DialogContent>
+    <UserNFTsDisplay />
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setNftPopupOpen(false)} color="primary">
+      Close
+    </Button>
+  </DialogActions>
+</Dialog>
 
       <Dialog 
   open={bookViewerOpen} 
@@ -1061,24 +1217,26 @@ const [setPrice, setSetPrice] = useState("");
   >
 
 <div style={{ marginBottom: '10px' }}>
-      <TextField
-        select
-        label="Select Book"
-        variant="outlined"
-        size="small"
-        value={selectedBook}
-        style={{ width: '180px'}} 
-        onChange={(e) => {
-          setSelectedBook(e.target.value);
-          fetchChapters(e.target.value);
-        }}
-      >
-    {books.map((book, index) => (
-    <MenuItem key={index} value={book.hash}>
-      {book.name}
+<TextField
+  select
+  label="Select Book"
+  value={selectedBook}
+  onChange={(e) => {
+    const selectedBookObj = combinedData.find(book => book.name === e.target.value);
+    if (selectedBookObj) {
+      setSelectedBook(selectedBookObj.name);
+      fetchBookData(selectedBookObj.hash);
+    }
+  }}
+>
+{combinedData.map((item, index) => (
+    <MenuItem key={index} value={item.name}>
+      {item.name}
     </MenuItem>
   ))}
-      </TextField>
+</TextField>
+
+
     </div>
     <div style={{ display: 'flex', alignItems: 'center' }}>
         {isCustomHash ? (
@@ -1090,41 +1248,25 @@ const [setPrice, setSetPrice] = useState("");
             onChange={(e) => setIpfsHash(e.target.value)}
           />
         ) : (
-          <TextField
-            select
-            label="Chapter"
-            variant="outlined"
-            size="small"
+<TextField
+  select
+  label="Select Chapter"
+  value={selectedChapter}
+  onChange={(e) => {
+    setSelectedChapter(e.target.value);
+    displayChapter(e.target.value);
+  }}
+>
+  {Bookchapters && Bookchapters.map((chapter, index) => (
+    <MenuItem key={index} value={chapter.hash}>
+      {chapter.name}
+    </MenuItem>
+  ))}
+</TextField>
 
-            value={selectedChapter}
-            style={{ width: '300px'}}  // Set the width here
-            onChange={(e) => {
-              if (e.target.value === "custom") {
-                setIsCustomHash(true);
-              } else {
-                setSelectedChapter(e.target.value);
-                setIpfsHash(e.target.value); // Assuming you want to set the IPFS hash here
-              }
-            }}
-          >
-            
-            {chapters.map((chapter, index) => (
-              <MenuItem key={index} value={chapter.hash}>
-                {chapter.name}
-              </MenuItem>
-            ))}
-            <MenuItem value="custom">Custom...</MenuItem>
-          </TextField>
+
         )}
-        {isCustomHash && (
-          <Button
-            onClick={() => {
-              setIsCustomHash(false);
-            }}
-          >
-            Back
-          </Button>
-        )}
+      
       </div>
     <Button 
       onClick={() => {
@@ -1155,6 +1297,22 @@ const [setPrice, setSetPrice] = useState("");
   `}</style>
 </Dialog>
 
+<Dialog open={aboutOpen} onClose={handleAboutClose} fullWidth={true}
+  maxWidth="md" >
+        <DialogTitle>How to Use</DialogTitle>
+        <DialogContent>
+        <iframe 
+      src="/Whitepaper.pdf" 
+      width="100%" 
+      height="400px">
+    </iframe>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleAboutClose} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
 
 
       <Container maxWidth="lg" justifyContent="center" alignItems="center">
@@ -1240,7 +1398,7 @@ const [setPrice, setSetPrice] = useState("");
             </Paper>
           </Grid>
 
-          <Grid item xs={12} md={8}>
+          <Grid item xs={12} md={8} style={{ marginBottom: '60px' }}>
             <Paper style={{ padding: theme.spacing(2), color: theme.palette.text.secondary }}>
               <Zoom in={true} style={{ transitionDelay: '300ms' }}>
                 <Tooltip title={isButtonDisabled('Connect') ? 'Fill all required fields' : 'Connect'}>
@@ -1267,7 +1425,7 @@ const [setPrice, setSetPrice] = useState("");
 
 
 
-
+             
 
               <Zoom in={true} style={{ transitionDelay: '300ms' }}>
                 <Tooltip title={isButtonDisabled('Deposit') ? 'Fill all required fields' : 'Deposit'}>
