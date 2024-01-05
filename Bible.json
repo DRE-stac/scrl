@@ -1,8 +1,0 @@
-{
-    "title": "The Bible",
-    "description": "This is a sample book.",
-    "Bookchapters": [
-        { "name": "Genesis", "hash": "QmVFRLSeeiL4ACpMG4ttytvx85Tmb9AVEKkSjttDtRZxLu" },
-        { "name": "Exodus", "hash": "QmZn7gyWpkZveGxCJAqKe29bhpmCyq1DnE6pGrQoc2z1rk" }
-    ]
-  }
