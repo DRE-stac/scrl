@@ -769,6 +769,9 @@ const [setPrice, setSetPrice] = useState("");
     setFeePercent('');
   };
 
+  const openDiscord = () => {
+    window.open('https://discord.gg/Mr3yFuKgzY', '_blank');
+  };
 
   const handleInputChange = (setter, value, functionName) => {
     setter(value);
@@ -1066,7 +1069,7 @@ const [setPrice, setSetPrice] = useState("");
           <Typography variant="h6" style={{ flexGrow: 1, fontFamily: '"Roboto Mono", monospace' }}>
   The_Scroll.x
 </Typography>
-<img src="./logo512.png" alt="Logo" style={{ width: '50px', height: '50px' }} />
+
 
 
           {blockchain.account && (
@@ -1077,16 +1080,10 @@ const [setPrice, setSetPrice] = useState("");
                 </Typography>
                 </div>
               {/* Add other cool information here */}
-              <div style={{ display: 'flex', alignItems: 'center', marginTop: '0.5rem' }}>
-                <Typography variant="body2" style={{ lineHeight: 1, marginLeft: '1rem' }}>
-                  Network: {blockchain && blockchain.network ? blockchain.network : 'Loading...'}
-                </Typography>
-                <Typography variant="body2" style={{ lineHeight: 1, marginLeft: '1rem' }}>
-                  Gas Price: {blockchain && blockchain.gasPrice ? blockchain.gasPrice : 'Loading...'}
-                </Typography>
-              </div>
+              
             </div>
           )}
+          <img src="./logo512.png" alt="Logo" style={{ width: '50px', height: '50px' }} />
         </Toolbar>
       </AppBar>
 
@@ -1116,30 +1113,55 @@ const [setPrice, setSetPrice] = useState("");
 
       </Drawer>
       <Dialog open={howToUseOpen} onClose={handleHowToUseClose}>
-        <DialogTitle>How to Use</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
+    <DialogTitle>How to Use The_Scroll.x</DialogTitle>
+    <DialogContent>
+        <DialogContentText>
             <Typography variant="h6" component="h2" gutterBottom style={{ marginTop: '2rem' }}>
-              How to Use
+                Getting Started with The_Scroll.x
             </Typography>
-            <Typography variant="body1">
-              <strong>Token Management Section:</strong>
-              <br />
-              <strong>Transaction Actions Section:</strong>
-              <br />
-              This section contains action buttons for different transactions. Each button is represented by an icon and a tooltip that appears when you hover over the icon. The tooltip provides a brief description of the action.
-              <br /><br />
-              Here's a rundown of the actions:
-              <br /><br />
-              <strong>Deposit:</strong> This allows you to deposit a specific amount of a token. You'll need to input the token and the amount.
-              <br /><br />
-              <strong>Withdraw:</strong> This allows you to withdraw a specific amount of a token. You'll need to input the token and the amount.
-              <br /><br />
-              <strong>Mint NFT:</strong> This allows you to mint a new NFT to a recipient. You'll need to input the recipient and the token URI.
-              <br /><br />
-              <strong>Set Forward Address:</strong> This allows you to set a forward address. You'll need to input the forward address.
-            </Typography>         </DialogContentText>
-        </DialogContent>
+
+            <Typography variant="body1" gutterBottom>
+                Welcome to our platform, where literature meets blockchain. Here's a simple guide to get you started.
+            </Typography>
+
+            <Typography variant="body1" gutterBottom>
+                <strong>BookViewer:</strong><br />
+                Explore a variety of digital books. Dive into different chapters and discover new stories.
+            </Typography>
+
+            <Typography variant="body1" gutterBottom>
+                <strong>NFT Minting:</strong><br />
+                Turn your creations into NFTs. A small deposit is needed to begin minting, which helps maintain our platform.
+            </Typography>
+
+            <Typography variant="body1" gutterBottom>
+                <strong>Interactive Elements:</strong><br />
+                Enjoy interactive elements in our books, like multimedia and author notes, for a richer experience.
+            </Typography>
+
+            <Typography variant="body1" gutterBottom>
+                <strong>Community Forum:</strong><br />
+                Join discussions, share ideas, and connect with fellow enthusiasts in our community forum.
+            </Typography>
+
+            <Typography variant="body1" gutterBottom>
+                <strong>Getting Started:</strong><br />
+                1. Connect your wallet to interact with the platform.<br />
+                2. Visit 'NFT Operations' to mint your NFTs easily.<br />
+                3. Check out the BookViewer for digital literature.<br />
+                4. Engage with the community and share your journey.
+            </Typography>
+
+            <Typography variant="body1" gutterBottom>
+                <strong>Need Help?</strong><br />
+                Our Help Center and Contact Us section are here for support. Also, check our FAQs for quick answers.
+            </Typography>
+
+            <Typography variant="body1" gutterBottom>
+                Thank you for joining The_Scroll.x. We're excited to have you on this literary and technological journey!
+            </Typography>
+        </DialogContentText>
+    </DialogContent>
         <DialogActions>
           <Button onClick={handleHowToUseClose} color="primary">
             Close
@@ -1374,7 +1396,6 @@ const [setPrice, setSetPrice] = useState("");
 <TextField label="Collection" value={collection} onChange={e => handleInputChange(setCollection, e.target.value, 'Mint NFT With Metadata')} fullWidth margin="normal" className={isDisabled('collection') ? classes.disabled : ''} disabled={isDisabled('collection')} />
 <TextField label="Name" value={name} onChange={e => handleInputChange(setName, e.target.value, 'Create Collection')} fullWidth margin="normal" className={isDisabled('name') ? classes.disabled : ''} disabled={isDisabled('name')} />
 <TextField label="Symbol" value={symbol} onChange={e => handleInputChange(setSymbol, e.target.value, 'Create Collection')} fullWidth margin="normal" className={isDisabled('symbol') ? classes.disabled : ''} disabled={isDisabled('symbol')} />
-<TextField label="IPFS Hash" value={ipfsHash} onChange={(e) => setIpfsHash(e.target.value, "IPFS HASH")}fullWidth margin="normal"/>          
           </List>
     </Box>
     <Box hidden={value !== 3}>
@@ -1477,15 +1498,7 @@ const [setPrice, setSetPrice] = useState("");
               </Zoom>
 
 
-              <Zoom in={true} style={{ transitionDelay: '700ms' }}>
-                <Tooltip title={isButtonDisabled('Set Forward Address') ? 'Fill all required fields' : 'Set Forward Address'}>
-                  <span>
-                    <IconButton onClick={() => ForwardAddress(forwardAddress)} disabled={isButtonDisabled('Set Forward Address')}>
-                      <SetAddressIcon />
-                    </IconButton>
-                  </span>
-                </Tooltip>
-              </Zoom>
+
 
               
 
@@ -1497,10 +1510,12 @@ const [setPrice, setSetPrice] = useState("");
         </Grid>
       </Container>
       <BottomNavigation value={bottomNavValue} onChange={handleBottomNavChange} style={{ position: 'fixed', bottom: 0, width: '100%' }}>
-        <BottomNavigationAction label="Settings" value="settings" icon={<SettingsIcon />} />
-        <BottomNavigationAction label="Help" value="help" icon={<HelpIcon />} />
-        {/* Add more bottom navigation items here */}
-      </BottomNavigation>
+  <Tooltip title="Coming Soon" enterDelay={500} leaveDelay={200}>
+    <BottomNavigationAction label="Settings" value="settings" icon={<SettingsIcon />} />
+  </Tooltip>
+  <BottomNavigationAction label="Help" icon={<HelpIcon />} onClick={openDiscord} />
+  {/* Add more bottom navigation items here */}
+</BottomNavigation>
     </ThemeProvider>
   );
 }
