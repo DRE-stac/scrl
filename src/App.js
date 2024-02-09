@@ -923,7 +923,8 @@ const [setPrice, setSetPrice] = useState("");
 
   const fetchBookData = async (bookHash) => {
     try {
-      const response = await axios.get(`https://ipfs.io/ipfs/${bookHash}`);
+      const formattedHash = bookHash.startsWith('ipfs://') ? bookHash.substring(7) : bookHash;
+      const response = await axios.get(`https://ipfs.io/ipfs/${formattedHash}`);
       console.log("Full response:", response);
   
       // Access the response data directly
@@ -939,33 +940,32 @@ const [setPrice, setSetPrice] = useState("");
   };
   
   
-useEffect(() => {
-  const fetchAndSetNFTTitle = async (nft) => {
-    // Check if 'nft.hash' starts with 'ipfs://' and remove it if present
-    const formattedHash = nft.hash.startsWith('ipfs://') ? nft.hash.substring(7) : nft.hash;
-    const ipfsGatewayUrl = `https://ipfs.io/ipfs/${formattedHash}`;
-
-    try {
-      const response = await axios.get(ipfsGatewayUrl);
-      const title = response.data.title; // Adjust based on the structure of your metadata
-      setNftTitles(prevTitles => ({
-        ...prevTitles,
-        [nft.id]: title
-      }));
-    } catch (error) {
-      console.error("Error fetching NFT title from IPFS:", error);
-      setNftTitles(prevTitles => ({
-        ...prevTitles,
-        [nft.id]: "Error loading title" // Or a default error message
-      }));
+  useEffect(() => {
+    const fetchAndSetNFTTitle = async (nft) => {
+      // Check if 'nft.hash' starts with 'ipfs://' and remove it if present
+      const formattedHash = nft.hash.startsWith('ipfs://') ? nft.hash.substring(7) : nft.hash;
+      const ipfsGatewayUrl = `https://ipfs.io/ipfs/${formattedHash}`;
+  
+      try {
+        const response = await axios.get(ipfsGatewayUrl);
+        const title = response.data.title; // Adjust based on the structure of your metadata
+        setNftTitles(prevTitles => ({
+          ...prevTitles,
+          [nft.id]: title
+        }));
+      } catch (error) {
+        console.error("Error fetching NFT title from IPFS:", error);
+        setNftTitles(prevTitles => ({
+          ...prevTitles,
+          [nft.id]: "Error loading title" // Or a default error message
+        }));
+      }
+    };
+  
+    if (nftPopupOpen && combinedData && combinedData.length > 0) {
+      combinedData.forEach(fetchAndSetNFTTitle);
     }
-  };
-
-  if (nftPopupOpen && combinedData && combinedData.length > 0) {
-    combinedData.forEach(fetchAndSetNFTTitle);
-  }
-}, [nftPopupOpen, combinedData]);
-
+  }, [nftPopupOpen, combinedData]);
 
   
   const displayChapter = async (chapterHash) => {
@@ -1326,7 +1326,7 @@ useEffect(() => {
 
 <Dialog open={aboutOpen} onClose={handleAboutClose} fullWidth={true}
   maxWidth="md" >
-        <DialogTitle>How to Use</DialogTitle>
+        <DialogTitle>Whitepaper</DialogTitle>
         <DialogContent>
         <iframe 
       src="/Whitepaper.pdf" 
