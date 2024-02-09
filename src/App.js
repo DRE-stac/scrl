@@ -981,7 +981,9 @@ useEffect(() => {
     // Function to fetch and update metadata for a single NFT
     const fetchAndSetNFTMetadata = async (nft) => {
         console.log(`Fetching metadata for NFT with ID: ${nft.id}`);
-        const ipfsGatewayUrl = `https://ipfs.io/ipfs/${nft.hash}`; // Replace 'nft.hash' with the actual property name
+              // Check if 'nft.hash' starts with 'ipfs://' and remove it if present
+      const formattedHash = nft.hash.startsWith('ipfs://') ? nft.hash.substring(7) : nft.hash;
+      const ipfsGatewayUrl = `https://ipfs.io/ipfs/${formattedHash}`;
         console.log(`IPFS Gateway URL: ${ipfsGatewayUrl}`);
 
         try {
