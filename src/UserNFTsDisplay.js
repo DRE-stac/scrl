@@ -39,7 +39,8 @@ const UserNFTsDisplay = () => {
     const fetchTitle = async (tokenURI) => {
         try {
             console.log('Fetching metadata from:', tokenURI);
-            const response = await axios.get(`https://ipfs.io/ipfs/${tokenURI}`);
+            const formattedHash = tokenURI.startsWith('ipfs://') ? tokenURI.substring(7) : tokenURI;
+            const ipfsGatewayUrl = `https://ipfs.io/ipfs/${formattedHash}`;
             const title = response.data.title || "Title not provided"; // Adjust based on your metadata structure
             console.log(`Title fetched for ${tokenURI}:`, title);
             return title;
@@ -48,6 +49,7 @@ const UserNFTsDisplay = () => {
             return "Error loading title"; // Default error message
         }
     };
+
 
     const renderNFTs = () => {
         if (loading) {
