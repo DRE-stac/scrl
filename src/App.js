@@ -939,30 +939,33 @@ const [setPrice, setSetPrice] = useState("");
   };
   
   
-  useEffect(() => {
-    const fetchAndSetNFTTitle = async (nft) => {
-        const ipfsGatewayUrl = `https://ipfs.io/ipfs/${nft.hash}`; // Replace 'nft.hash' with the actual property name
+useEffect(() => {
+  const fetchAndSetNFTTitle = async (nft) => {
+    // Check if 'nft.hash' starts with 'ipfs://' and remove it if present
+    const formattedHash = nft.hash.startsWith('ipfs://') ? nft.hash.substring(7) : nft.hash;
+    const ipfsGatewayUrl = `https://ipfs.io/ipfs/${formattedHash}`;
 
-        try {
-            const response = await axios.get(ipfsGatewayUrl);
-            const title = response.data.title; // Adjust based on the structure of your metadata
-            setNftTitles(prevTitles => ({
-                ...prevTitles,
-                [nft.id]: title
-            }));
-        } catch (error) {
-            console.error("Error fetching NFT title from IPFS:", error);
-            setNftTitles(prevTitles => ({
-                ...prevTitles,
-                [nft.id]: "Error loading title" // Or a default error message
-            }));
-        }
-    };
-
-    if (nftPopupOpen && combinedData && combinedData.length > 0) {
-        combinedData.forEach(fetchAndSetNFTTitle);
+    try {
+      const response = await axios.get(ipfsGatewayUrl);
+      const title = response.data.title; // Adjust based on the structure of your metadata
+      setNftTitles(prevTitles => ({
+        ...prevTitles,
+        [nft.id]: title
+      }));
+    } catch (error) {
+      console.error("Error fetching NFT title from IPFS:", error);
+      setNftTitles(prevTitles => ({
+        ...prevTitles,
+        [nft.id]: "Error loading title" // Or a default error message
+      }));
     }
+  };
+
+  if (nftPopupOpen && combinedData && combinedData.length > 0) {
+    combinedData.forEach(fetchAndSetNFTTitle);
+  }
 }, [nftPopupOpen, combinedData]);
+
 
   
   const displayChapter = async (chapterHash) => {
